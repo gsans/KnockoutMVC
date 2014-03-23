@@ -41,7 +41,7 @@ New Task <input type="text" value="Task Name" id="task" />
                 var self = this;
                 self.id = 0;
                 self.name = name;
-                self.dueDate = moment().format('D/M/YYYY');
+                self.dueDate = new Date(); //moment().format('D/M/YYYY');
                 self.isDone = false;
             }
 
@@ -66,8 +66,7 @@ New Task <input type="text" value="Task Name" id="task" />
                 }, this);
 
                 self.loadTasks = function (task) {
-                    alert('in');
-                    $.getJSON("api/Tasks", function (allData) {                        
+                    $.get("api/Tasks", null, function (allData) {
                         var mappedTasks = $.map(allData, function (item) { return new Task2(item) });
                         self.tasks(mappedTasks);
                     });
@@ -75,14 +74,30 @@ New Task <input type="text" value="Task Name" id="task" />
 
                 self.addTask = function () {
                     var newTask = $('#task').val();
-                    self.tasks.push(new Task(newTask));
+                    //self.tasks.push(new Task(newTask));
+                    //$.ajax({ type: "POST", url: 'api/Tasks', data: new Task(newTask) });
+
+                    $.ajax({
+                        url: "api/Tasks",
+                        type: "Post",
+                        data: JSON.stringify(new Task(newTask)),
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (data) {
+                            self.loadTasks();
+                        },
+                        error: function () { alert('error'); }
+                    });
+
+                    /*$.get("api/Tasks/", null, function (allData) {
+                        var mappedTasks = $.map(allData, function (item) { return new Task2(item) });
+                        self.tasks(mappedTasks);
+                    });*/
                 };
                 self.removeTask = function (task) {
                     self.tasks.remove(task);
                 };
-
                 
-
+                self.loadTasks();
             }
 
             ko.applyBindings(new AppViewModel());
