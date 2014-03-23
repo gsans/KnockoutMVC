@@ -5,7 +5,7 @@
 <h2>Index</h2>
 
 New Task <input type="text" value="Task Name" id="task" />
-<input type="button" value="Add" data-bind="click: $root.addTask" />
+<button data-bind="click: $root.addTask">Add</button>
 
 <h2>Tasks <span data-bind="text: totalTasks"></span></h2>
 <table data-bind="visible: totalTasks()>0">
