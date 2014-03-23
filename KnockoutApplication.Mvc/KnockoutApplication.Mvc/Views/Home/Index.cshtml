@@ -6,6 +6,7 @@
 
 New Task <input type="text" value="Task Name" id="task" />
 <button data-bind="click: $root.addTask">Add</button>
+<button data-bind="click: $root.loadTasks">Load</button>
 
 <h2>Tasks <span data-bind="text: totalTasks"></span></h2>
 <table data-bind="visible: totalTasks()>0">
@@ -44,16 +45,34 @@ New Task <input type="text" value="Task Name" id="task" />
                 self.isDone = false;
             }
 
+            function Task2(item) {
+                var self = this;
+                self.id = item.Id;
+                self.name = item.Name;
+                self.dueDate = item.DueDate; //moment().format('D/M/YYYY');
+                self.isDone = item.IsDone;
+            }
+
+
             function AppViewModel() {
                 var self = this;
-                self.tasks = ko.observableArray([
+                self.tasks = ko.observableArray(); /*[
                     { id: 1, name: "Task1", dueDate: "1/1/2014", isDone: true },
                     { id: 2, name: "Task2", dueDate: "1/1/2014", isDone: false }
-                ]);
+                ]);*/
 
                 self.totalTasks = ko.computed(function () {
                     return self.tasks().length > 0 ? self.tasks().length : 'Empty';
                 }, this);
+
+                self.loadTasks = function (task) {
+                    alert('in');
+                    $.getJSON("api/Tasks", function (allData) {
+                        //allData = $.parseJSON(allData);
+                        var mappedTasks = $.map(allData, function (item) { return new Task2(item) });
+                        self.tasks(mappedTasks);
+                    });
+                };
 
                 self.addTask = function () {
                     var newTask = $('#task').val();
@@ -62,6 +81,8 @@ New Task <input type="text" value="Task Name" id="task" />
                 self.removeTask = function (task) {
                     self.tasks.remove(task);
                 };
+
+                
 
             }
 
