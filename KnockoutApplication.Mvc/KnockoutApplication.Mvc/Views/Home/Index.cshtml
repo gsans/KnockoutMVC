@@ -1,0 +1,61 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+New Task <input type="text" value="Task Name" id="task" />
+<input type="button" value="Add" data-bind="click: $root.addTask" />
+
+<table>
+    <thead>
+        <tr>
+            <th>Done</th>
+            <th>Task</th>
+            <th>Due Date</th>    
+            <th></th>           
+        </tr>
+    </thead>
+    <tbody data-bind="foreach: tasks">
+        <tr>
+            <td data-bind="attr: {id:id}"><input type="checkbox" data-bind="attr: {checked: isDone}"/></td>
+            <td data-bind="attr: {id:id}, text: name"></td>
+            <td data-bind="attr: {id:id}, text: dueDate"></td>
+            <td><a href="#" data-bind="attr: {id:id}, click: $root.removeTask">Remove</a></td>
+        </tr>
+    </tbody>
+</table>
+
+
+@section scripts 
+{
+    @Scripts.Render("~/Scripts/knockout-3.1.0.js")
+    @Scripts.Render("~/Scripts/moment.min.js")
+
+    <script>
+        function Task(name) {
+            var self = this;
+            self.name = name;
+            self.dueDate = moment().format('D/M/YYYY');
+            self.isDone = false;
+        }
+
+        function AppViewModel() {
+            var self = this;
+            self.tasks = ko.observableArray([
+                { id: 1, name: "Task1", dueDate: "1/1/2014", isDone: true },
+                { id: 2, name: "Task2", dueDate: "1/1/2014", isDone: false }
+            ]);
+
+            self.addTask = function () {
+                var newTask = $('#task').val();
+                self.tasks.push(new Task(newTask));
+            };
+            self.removeTask = function (task) {
+                self.tasks.remove(task);
+            };
+        }
+
+        ko.applyBindings(new AppViewModel());
+    </script>
+}
