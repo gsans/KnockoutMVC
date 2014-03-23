@@ -25,3 +25,6 @@ Thumbs.db
 [Rr]elease*/
 _ReSharper*/
 [Tt]est[Rr]esult*
+App_Data/
+KnockoutApplication.Mvc/KnockoutApplication.Mvc/App_Data/Database.mdf
+KnockoutApplication.Mvc/KnockoutApplication.Mvc/App_Data/Database_log.ldf
