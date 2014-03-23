@@ -49,7 +49,7 @@ New Task <input type="text" value="Task Name" id="task" />
                 var self = this;
                 self.id = item.Id;
                 self.name = item.Name;
-                self.dueDate = item.DueDate; //moment().format('D/M/YYYY');
+                self.dueDate = moment.utc(item.DueDate).format('D/M/YYYY');
                 self.isDone = item.IsDone;
             }
 
@@ -67,8 +67,7 @@ New Task <input type="text" value="Task Name" id="task" />
 
                 self.loadTasks = function (task) {
                     alert('in');
-                    $.getJSON("api/Tasks", function (allData) {
-                        //allData = $.parseJSON(allData);
+                    $.getJSON("api/Tasks", function (allData) {                        
                         var mappedTasks = $.map(allData, function (item) { return new Task2(item) });
                         self.tasks(mappedTasks);
                     });
