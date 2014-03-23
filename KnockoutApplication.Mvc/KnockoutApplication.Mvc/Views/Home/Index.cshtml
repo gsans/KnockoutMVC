@@ -7,7 +7,8 @@
 New Task <input type="text" value="Task Name" id="task" />
 <input type="button" value="Add" data-bind="click: $root.addTask" />
 
-<table>
+<h2>Tasks <span data-bind="text: totalTasks"></span></h2>
+<table data-bind="visible: totalTasks()>0">
     <thead>
         <tr>
             <th>Done</th>
@@ -25,37 +26,45 @@ New Task <input type="text" value="Task Name" id="task" />
         </tr>
     </tbody>
 </table>
+<span data-bind="visible: totalTasks()=='Empty'">No Tasks to show.</span>
 
 
-@section scripts 
+
+    @section scripts
 {
-    @Scripts.Render("~/Scripts/knockout-3.1.0.js")
-    @Scripts.Render("~/Scripts/moment.min.js")
+        @Scripts.Render("~/Scripts/knockout-3.1.0.js")
+        @Scripts.Render("~/Scripts/moment.min.js")
 
-    <script>
-        function Task(name) {
-            var self = this;
-            self.name = name;
-            self.dueDate = moment().format('D/M/YYYY');
-            self.isDone = false;
-        }
+        <script>
+            function Task(name) {
+                var self = this;
+                self.id = 0;
+                self.name = name;
+                self.dueDate = moment().format('D/M/YYYY');
+                self.isDone = false;
+            }
 
-        function AppViewModel() {
-            var self = this;
-            self.tasks = ko.observableArray([
-                { id: 1, name: "Task1", dueDate: "1/1/2014", isDone: true },
-                { id: 2, name: "Task2", dueDate: "1/1/2014", isDone: false }
-            ]);
+            function AppViewModel() {
+                var self = this;
+                self.tasks = ko.observableArray([
+                    { id: 1, name: "Task1", dueDate: "1/1/2014", isDone: true },
+                    { id: 2, name: "Task2", dueDate: "1/1/2014", isDone: false }
+                ]);
 
-            self.addTask = function () {
-                var newTask = $('#task').val();
-                self.tasks.push(new Task(newTask));
-            };
-            self.removeTask = function (task) {
-                self.tasks.remove(task);
-            };
-        }
+                self.totalTasks = ko.computed(function () {
+                    return self.tasks().length > 0 ? self.tasks().length : 'Empty';
+                }, this);
 
-        ko.applyBindings(new AppViewModel());
-    </script>
-}
+                self.addTask = function () {
+                    var newTask = $('#task').val();
+                    self.tasks.push(new Task(newTask));
+                };
+                self.removeTask = function (task) {
+                    self.tasks.remove(task);
+                };
+
+            }
+
+            ko.applyBindings(new AppViewModel());
+        </script>
+    }
